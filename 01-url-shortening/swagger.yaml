@@ -1,0 +1,277 @@
+openapi: 3.0.3
+info:
+  title: URL Shortening Service API
+  version: 1.0.0
+  description: API for URL shortening, QR code generation, deletion, and bulk operations.
+
+servers:
+  - url: https://api.short.ly
+  
+paths:
+  /urls:
+    post:
+      summary: Create a shortened URL
+      tags:
+        - URL resource
+      description: Shorten a given URL with an optional expiration time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShortUrlRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateShortUrlResponse'
+        '400':
+          description: Bad Request (invalid input)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /urls/{id}/qrcode:
+    post:
+      summary: Generate a QR code for a shortened URL
+      tags:
+        - URL resource
+      description: Generate a QR code for an existing shortened URL.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the shortened URL.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateQrcodeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateQrcodeResponse'
+        '400':
+          description: Bad Request (invalid parameters)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found (no such URL)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /urls/{id}:
+    delete:
+      summary: Delete a shortened URL
+      tags:
+        - URL resource
+      description: Delete a shortened URL, making it unavailable for future redirection.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the shortened URL to delete.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteUrlResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /urls/bulk:
+    post:
+      summary: Bulk shorten multiple URLs
+      tags:
+        - URL resource
+      description: Create shortened URLs in bulk.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkShortenUrlsRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkShortenUrlsResponse'
+        '400':
+          description: Bad Request (invalid input)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    # Request DTOs
+    CreateShortUrlRequest:
+      type: object
+      required:
+        - original_url
+      properties:
+        original_url:
+          type: string
+          format: uri
+          description: The URL to be shortened.
+        expiration_seconds:
+          type: integer
+          description: Lifetime of the shortened URL in seconds.
+
+    GenerateQrcodeRequest:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: Size of the QR code in pixels.
+        image_format:
+          type: string
+          enum: [png, svg]
+          description: The output format of the QR code image.
+
+    BulkShortenUrlsRequest:
+      type: object
+      required:
+        - urls
+      properties:
+        urls:
+          type: array
+          items:
+            type: object
+            required:
+              - original_url
+            properties:
+              original_url:
+                type: string
+                format: uri
+                description: The URL to be shortened.
+              expiration_seconds:
+                type: integer
+                description: Lifetime of this particular shortened URL in seconds.
+
+    # Response DTOs
+    CreateShortUrlResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the shortened URL.
+        short_url:
+          type: string
+          format: uri
+          description: The shortened URL.
+        original_url:
+          type: string
+          format: uri
+          description: The original URL.
+        expires_at:
+          type: string
+          format: date-time
+          description: The timestamp when the shortened URL expires.
+
+    GenerateQrcodeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the shortened URL.
+        qrcode_url:
+          type: string
+          format: uri
+          description: A URL where the generated QR code image can be retrieved.
+
+    DeleteUrlResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the shortened URL that was deleted.
+        deleted:
+          type: boolean
+          description: Indicates if the URL was successfully deleted.
+
+    BulkShortenUrlsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: The unique identifier of the shortened URL.
+              original_url:
+                type: string
+                format: uri
+                description: The original URL that was shortened.
+              short_url:
+                type: string
+                format: uri
+                description: The shortened URL.
+              expires_at:
+                type: string
+                format: date-time
+                description: The timestamp when the shortened URL expires.
+
+    # Error DTO
+    ErrorResponse:
+      type: object
+      required:
+        - error_code
+        - error_message
+      properties:
+        error_code:
+          type: string
+          description: Machine-readable error code.
+        error_message:
+          type: string
+          description: Human-readable error message.
