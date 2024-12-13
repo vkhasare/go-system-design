@@ -20,6 +20,5 @@ build: deps
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BINARY_NAME) -ldflags '-extldflags "-static"' cmd/main.go
 	chmod +x $(BINARY_NAME)
 
-# Run the application
-run:
-	$(ENV_VARS) go run $(LDFLAGS) cmd/main.go
+docker-build: build
+	docker build -t url-shortner:dev-1 .

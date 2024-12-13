@@ -4,15 +4,16 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
     volumes:
-      - type: tmpfs
-        target: /var/lib/postgresql/data
-        tmpfs:
-          size: 100000000
+      - postgres_data:/var/lib/postgresql/data
   
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
@@ -30,10 +31,20 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
       - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/realms/master"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   url-shortner:
     image: url-shortner:dev-1
     ports:
       - "8053:8053"
     depends_on:
-    - keycloak
+      keycloak:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
