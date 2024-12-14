@@ -12,7 +12,7 @@ func main() {
 	//Initialize middleware
 	cfg := middleware.OIDCConfig{
 		Issuer:   "http://localhost:8080/realms/url-shortner",
-		ClientID: "url-shortner-client",
+		ClientID: "account",
 	}
 
 	authMiddleware, err := middleware.AuthMiddleware(cfg)

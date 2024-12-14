@@ -50,6 +50,7 @@ func AuthMiddleware(cfg OIDCConfig) (gin.HandlerFunc, error) {
 		idToken, err := verifier.Verify(context.Background(), rawToken)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error_code": "INVALID_TOKEN", "error_message": "Token verification failed"})
+			log.Println("Verification error: ", err.Error())
 			return
 		}
 
