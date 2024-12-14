@@ -11,7 +11,8 @@ import (
 func main() {
 	//Initialize middleware
 	cfg := middleware.OIDCConfig{
-		Issuer:   "http://localhost:8080/realms/url-shortner",
+		//TODO: take "keycloak" via environment variable in compose file.
+		Issuer:   "http://keycloak:8080/realms/url-shortner",
 		ClientID: "account",
 	}
 

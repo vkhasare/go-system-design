@@ -29,10 +29,12 @@ services:
       KC_LOG_LEVEL: INFO
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
     ports:
       - 8080:8080
+      - 9000:9000
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/realms/master"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health/ready"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -40,11 +42,8 @@ services:
 
   url-shortner:
     image: url-shortner:dev-1
+    restart: unless-stopped
     ports:
       - "8053:8053"
-    depends_on:
-      keycloak:
-        condition: service_healthy
-
 volumes:
   postgres_data:
