@@ -2,11 +2,15 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
+	"url-shortening/controllers"
 	"url-shortening/middleware"
+	"url-shortening/repositories"
+	"url-shortening/services"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -29,12 +33,22 @@ func main() {
 
 	log.Println("Finished middleware initialization.")
 
+	//Initialize db.
+	dsn := "host=localhost user=keycloak password=password dbname=keycloak port=5432 sslmode=disable TimeZone=UTC"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("failed to connect database: %v", err)
+	}
+
+	//Initialize 3-tier arch.
+	repo := repositories.NewShortURLRepository(db)
+	service := services.NewShortURLService(repo)
+	controller := controllers.NewURLController(service)
+
 	//Initialize gin router
 	r := gin.Default()
 
-	r.GET("/ping", authMiddleware, func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"response": "pong"})
-	})
+	r.POST("/urls", authMiddleware, controller.CreateShortURL)
 
 	r.Run(":8053")
 }
