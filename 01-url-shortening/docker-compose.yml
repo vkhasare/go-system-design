@@ -42,6 +42,8 @@ services:
 
   url-shortner:
     image: url-shortner:dev-1
+    environment:
+      KC_REALM_URL: "http://keycloak:8080/realms/url-shortner"
     restart: unless-stopped
     ports:
       - "8053:8053"

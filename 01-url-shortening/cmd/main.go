@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"url-shortening/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -10,9 +11,13 @@ import (
 
 func main() {
 	//Initialize middleware
+	issuer := os.Getenv("KC_REALM_URL")
+	if issuer == "" {
+		issuer = "http://localhost:8080/realms/url-shortner" // Default value
+	}
+
 	cfg := middleware.OIDCConfig{
-		//TODO: take "keycloak" via environment variable in compose file.
-		Issuer:   "http://keycloak:8080/realms/url-shortner",
+		Issuer:   issuer,
 		ClientID: "account",
 	}
 
