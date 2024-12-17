@@ -34,7 +34,7 @@ func main() {
 	log.Println("Finished middleware initialization.")
 
 	//Initialize db.
-	dsn := "host=localhost user=keycloak password=password dbname=keycloak port=5432 sslmode=disable TimeZone=UTC"
+	dsn := "host=localhost user=keycloak password=password dbname=url-shortner port=65432 sslmode=disable TimeZone=UTC"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)

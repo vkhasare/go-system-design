@@ -3,7 +3,7 @@ package dtos
 import "time"
 
 type CreateShortUrlRequest struct {
-	OriginalURL       string `json:"original_url" binding:"required,url"`
+	OriginalURL       string `json:"original_url" binding:"required"`
 	ExpirationSeconds *int   `json:"expiration_seconds,omitempty"`
 }
 
