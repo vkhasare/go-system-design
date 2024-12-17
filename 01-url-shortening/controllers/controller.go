@@ -29,7 +29,7 @@ func (ctrl *URLController) CreateShortURL(c *gin.Context) {
 		return
 	}
 
-	resp, err := ctrl.service.CreateShortURL(req)
+	resp, err := ctrl.service.CreateShortURL(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dtos.ErrorResponse{
 			ErrorCode:    "INTERNAL_ERROR",
