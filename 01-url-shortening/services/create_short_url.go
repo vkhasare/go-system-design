@@ -4,15 +4,20 @@ import (
 	"fmt"
 	"time"
 	"url-shortening/dtos"
-	"url-shortening/entities"
+	"url-shortening/mapper"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func (s *shortURLService) CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error) {
-	// Generate a unique short URL token (for demonstration, using UUID)
+func (s *shortURLService) CreateShortURL(c *gin.Context, req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error) {
+	// Map DTO to entity
+	shortUrlEntity := mapper.CreateShortUrlRequestMapper(c, req)
+
+	// Compute short URL
 	shortToken := uuid.New().String()
 
+	// Compute expiration timestamp
 	expiresAt := time.Now().UTC()
 	if req.ExpirationSeconds != nil {
 		expiresAt = expiresAt.Add(time.Duration(*req.ExpirationSeconds) * time.Second)
@@ -21,16 +26,11 @@ func (s *shortURLService) CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.
 		expiresAt = expiresAt.Add(30 * 24 * time.Hour)
 	}
 
-	shortUrlEntity := &entities.ShortURL{
-		OriginalURL: req.OriginalURL,
-		ShortURL:    shortToken,
-		UserID:      &req.UserID,
-		QRCode:      nil, // QR code generation if needed
-		ExpiresAt:   expiresAt,
-		CreatedBy:   req.UserID,
-		CreatedDate: time.Now().UTC(),
-	}
+	// Set remaining fields in entity
+	shortUrlEntity.ShortURL = shortToken
+	shortUrlEntity.ExpiresAt = expiresAt
 
+	// Save to DB
 	err := s.repo.CreateShortURL(shortUrlEntity)
 	if err != nil {
 		return nil, err

@@ -30,25 +30,8 @@ func (ctrl *URLController) CreateShortURL(c *gin.Context) {
 		})
 		return
 	}
-	userID, ok := c.Get("email")
-	if !ok {
-		c.JSON(http.StatusBadRequest, dtos.ErrorResponse{
-			ErrorCode:    "BAD_REQUEST",
-			ErrorMessage: "UserID missing",
-		})
-		return
-	} else {
-		if _, ok = userID.(string); !ok {
-			c.JSON(http.StatusBadRequest, dtos.ErrorResponse{
-				ErrorCode:    "BAD_REQUEST",
-				ErrorMessage: "Failed to extract UserID",
-			})
-			return
-		}
-		req.UserID = userID.(string)
-	}
 
-	resp, err := ctrl.service.CreateShortURL(req)
+	resp, err := ctrl.service.CreateShortURL(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dtos.ErrorResponse{
 			ErrorCode:    "INTERNAL_ERROR",
@@ -72,7 +55,7 @@ func (ctrl *URLController) DeleteShortURL(c *gin.Context) {
 		return
 	}
 	log.Printf("Attempting to delete: %d", id)
-	resp, err := ctrl.service.DeleteShortURLByID(id)
+	resp, err := ctrl.service.DeleteShortURLByID(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dtos.ErrorResponse{
 			ErrorCode:    "INTERNAL_ERROR",

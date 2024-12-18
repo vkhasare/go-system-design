@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"url-shortening/dtos"
+
+	"github.com/gin-gonic/gin"
 )
 
-func (s *shortURLService) DeleteShortURLByID(id uint64) (*dtos.DeleteUrlResponse, error) {
+func (s *shortURLService) DeleteShortURLByID(c *gin.Context, id uint64) (*dtos.DeleteUrlResponse, error) {
 	num_rows, err := s.repo.DeleteByID(id)
 
 	switch {

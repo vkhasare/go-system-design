@@ -3,11 +3,13 @@ package services
 import (
 	"url-shortening/dtos"
 	"url-shortening/repositories"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ShortURLService interface {
-	CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
-	DeleteShortURLByID(id uint64) (*dtos.DeleteUrlResponse, error)
+	CreateShortURL(c *gin.Context, req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
+	DeleteShortURLByID(c *gin.Context, id uint64) (*dtos.DeleteUrlResponse, error)
 }
 
 type shortURLService struct {

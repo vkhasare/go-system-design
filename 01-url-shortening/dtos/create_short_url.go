@@ -4,8 +4,7 @@ import "time"
 
 type CreateShortUrlRequest struct {
 	OriginalURL       string `json:"original_url" binding:"required"`
-	UserID            string
-	ExpirationSeconds *int `json:"expiration_seconds,omitempty"`
+	ExpirationSeconds *int   `json:"expiration_seconds,omitempty"`
 }
 
 type CreateShortUrlResponse struct {
