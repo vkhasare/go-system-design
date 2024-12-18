@@ -1,18 +1,16 @@
 package services
 
 import (
-	"fmt"
 	"time"
 	"url-shortening/dtos"
 	"url-shortening/entities"
 	"url-shortening/repositories"
 
-	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 type ShortURLService interface {
-	CreateShortURL(c *gin.Context, req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
+	CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
 }
 
 type shortURLService struct {
@@ -23,14 +21,9 @@ func NewShortURLService(repo repositories.ShortURLRepository) ShortURLService {
 	return &shortURLService{repo: repo}
 }
 
-func (s *shortURLService) CreateShortURL(c *gin.Context, req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error) {
+func (s *shortURLService) CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error) {
 	// Generate a unique short URL token (for demonstration, using UUID)
 	shortToken := uuid.New().String()
-
-	email, exists := c.Value("email").(string)
-	if !exists {
-		return nil, fmt.Errorf("email not found in context")
-	}
 
 	expiresAt := time.Now().UTC()
 	if req.ExpirationSeconds != nil {
@@ -43,11 +36,10 @@ func (s *shortURLService) CreateShortURL(c *gin.Context, req dtos.CreateShortUrl
 	shortUrlEntity := &entities.ShortURL{
 		OriginalURL: req.OriginalURL,
 		ShortURL:    shortToken,
-		// In a real application, you'd derive UserID and CreatedBy from context (e.g., authenticated user)
-		UserID:      &email,
+		UserID:      &req.UserID,
 		QRCode:      nil, // QR code generation if needed
 		ExpiresAt:   expiresAt,
-		CreatedBy:   email, // placeholder, replace with actual user
+		CreatedBy:   req.UserID,
 		CreatedDate: time.Now().UTC(),
 	}
 
