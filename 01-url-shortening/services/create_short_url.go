@@ -1,25 +1,13 @@
 package services
 
 import (
+	"fmt"
 	"time"
 	"url-shortening/dtos"
 	"url-shortening/entities"
-	"url-shortening/repositories"
 
 	"github.com/google/uuid"
 )
-
-type ShortURLService interface {
-	CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
-}
-
-type shortURLService struct {
-	repo repositories.ShortURLRepository
-}
-
-func NewShortURLService(repo repositories.ShortURLRepository) ShortURLService {
-	return &shortURLService{repo: repo}
-}
 
 func (s *shortURLService) CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error) {
 	// Generate a unique short URL token (for demonstration, using UUID)
@@ -49,7 +37,7 @@ func (s *shortURLService) CreateShortURL(req dtos.CreateShortUrlRequest) (*dtos.
 	}
 
 	response := &dtos.CreateShortUrlResponse{
-		ID:          string(rune(shortUrlEntity.ID)),
+		ID:          fmt.Sprintf("%d", shortUrlEntity.ID),
 		ShortURL:    shortUrlEntity.ShortURL,
 		OriginalURL: shortUrlEntity.OriginalURL,
 		ExpiresAt:   shortUrlEntity.ExpiresAt,

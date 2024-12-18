@@ -49,6 +49,7 @@ func main() {
 	r := gin.Default()
 
 	r.POST("/urls", authMiddleware, controller.CreateShortURL)
+	r.DELETE("/urls/:id", controller.DeleteShortURL)
 
 	r.Run(":8053")
 }
