@@ -9,7 +9,7 @@ import (
 
 type ShortURLService interface {
 	CreateShortURL(c *gin.Context, req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
-	DeleteShortURLByID(c *gin.Context, id uint64) (*dtos.DeleteUrlResponse, error)
+	DeleteShortURLByID(c *gin.Context, id uint64) error
 }
 
 type shortURLService struct {

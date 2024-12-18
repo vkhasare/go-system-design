@@ -54,8 +54,9 @@ func (ctrl *URLController) DeleteShortURL(c *gin.Context) {
 		})
 		return
 	}
+
 	log.Printf("Attempting to delete: %d", id)
-	resp, err := ctrl.service.DeleteShortURLByID(c, id)
+	err = ctrl.service.DeleteShortURLByID(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dtos.ErrorResponse{
 			ErrorCode:    "INTERNAL_ERROR",
@@ -64,5 +65,5 @@ func (ctrl *URLController) DeleteShortURL(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.Status(http.StatusNoContent)
 }
