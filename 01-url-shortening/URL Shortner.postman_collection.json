@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "20a76c36-2cec-4eee-bc93-c2748fe90d69",
+		"name": "URL Shortner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28445224"
+	},
+	"item": [
+		{
+			"name": "Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "url-shortner-client",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "testuser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "testpassword",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/realms/url-shortner/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"realms",
+						"url-shortner",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST \"http://localhost:8080/realms/url-shortner/protocol/openid-connect/token\" \\\n     -H \"Content-Type: application/x-www-form-urlencoded\" \\\n     -d \"grant_type=password\" \\\n     -d \"client_id=url-shortner-client\" \\\n     -d \"username=testuser\" \\\n     -d \"password=testpassword\"\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Token with ClientSecret",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "url-shortner-client",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "YOUR_CLIENT_SECRET_HERE",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "vrushali.khasare",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "User@1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/realms/url-shortner/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"realms",
+						"url-shortner",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:8080/realms/url-shortner/protocol/openid-connect/token' \\\n--header 'Content-Type: application/x-www-form-urlencoded' \\\n--data-urlencode 'grant_type=password' \\\n--data-urlencode 'client_id=url-shortner-client' \\\n--data-urlencode 'client_secret=YOUR_CLIENT_SECRET_HERE' \\\n--data-urlencode 'username=vrushali.khasare' \\\n--data-urlencode 'password=User@1234'\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJaHFackNFTk85TFlBalptMkpMT09zbHJDdVZjWktKOW91ejVhVDNwNUgwIn0.eyJleHAiOjE3MzQ1MTY3MTQsImlhdCI6MTczNDUxNjQxNCwianRpIjoiYmRkYzg1NjgtM2JhNS00NDY2LWFmNjktMjQzZjc1MDAwZThhIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy91cmwtc2hvcnRuZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZDY5M2I3MWEtN2Y5OC00ZTZmLTg0ZTYtMTdkMzI5ODQyNjRmIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoidXJsLXNob3J0bmVyLWNsaWVudC1wdWJsaWMiLCJzaWQiOiIxYThjMmU0OS1hYTNmLTQ1YTAtYTRiNi0zNzIwMDFiOGUxNWMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLXVybC1zaG9ydG5lciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJWcnVzaGFsaSBLaGFzYXJlIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidnJ1c2hhbGkua2hhc2FyZSIsImdpdmVuX25hbWUiOiJWcnVzaGFsaSIsImZhbWlseV9uYW1lIjoiS2hhc2FyZSIsImVtYWlsIjoidnJ1c2hhbGkua2hhc2FyZUBnbWFpbC5jb20ifQ.IBeL-tbRZsMvKaNfu8Rg6mAgOvoCI9o357cAB1UF871qPBK9NrH9bb0wcMZPO0PCqxCvCz6QHl1wJTmz0TiBpexl6151mJIIV6a6_Vr_bRXR9tvCDtVvzXkpUAui_g_nh6Jh4q98SlbJ1EGrV915dDNbMcJkJpy8iWgXPMoy4QWHCBI97YHCmZnIP5KZgBsOoNzIGZcGxIsI9JAjCcIiUCwhdaAFi0nYZgMkg4gP6pCjWlgZFXuWxWunZTURHvwZC2gS0N64y_38tHD2DXNM43CMFGiL0FYWdrD5NgEkZtsO6CVp_UOJIRkRi70pbsmCqlHpdg5foz2Q3I1jQnWRLA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"original_url\": \"my_new_string\",\n  \"expiration_seconds\": 1734444908\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8053/urls",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8053",
+					"path": [
+						"urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete URL",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJaHFackNFTk85TFlBalptMkpMT09zbHJDdVZjWktKOW91ejVhVDNwNUgwIn0.eyJleHAiOjE3MzQ1Mzc4NjYsImlhdCI6MTczNDUzNzU2NiwianRpIjoiNmY2NWZiZjMtY2I5OC00MDM2LThiMjMtNDgzODgxZmFiNGMxIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL3VybC1zaG9ydG5lciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJkNjkzYjcxYS03Zjk4LTRlNmYtODRlNi0xN2QzMjk4NDI2NGYiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ1cmwtc2hvcnRuZXItY2xpZW50LXB1YmxpYyIsInNpZCI6IjEzYjAwZjlkLTAyNzEtNGE0Ny05M2RiLWQyZGJiYWVkNDljNSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdXJsLXNob3J0bmVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IlZydXNoYWxpIEtoYXNhcmUiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ2cnVzaGFsaS5raGFzYXJlIiwiZ2l2ZW5fbmFtZSI6IlZydXNoYWxpIiwiZmFtaWx5X25hbWUiOiJLaGFzYXJlIiwiZW1haWwiOiJ2cnVzaGFsaS5raGFzYXJlQGdtYWlsLmNvbSJ9.hwrpEPyUspq_WRWN4xsoo2CRXfC6uWXF2IAvBGHwcrnJOosI2TAVuSqRNh--3xN2UjeXbIJOUX003_dqqPacQ5xsZIFftkYAxxDq-esyoK9jTWxsbi3vp9L5nU5jqvT6TITbvmlERyq7C8OBe1D0Qr6o3M8U8DwTzyZrFMbZszR200M6ZfOjmoN5twS2uXHxGVILmdtSvOa49Fz_22CXmkh20psm-GqMW7a_njksoz75J9WnUbcf_vsGRGjh3OXZLFb70p7gHGO4IlTeuNMES5VAa-V8PE2FBUv26fqvHJpp2HSBF4FULzcjSgU7-WRxX5cer2eUFMir_P5a-VNg2A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8053/urls/9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8053",
+					"path": [
+						"urls",
+						"9"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
