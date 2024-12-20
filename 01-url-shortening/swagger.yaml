@@ -8,6 +8,34 @@ servers:
   - url: https://api.short.ly
   
 paths:
+  /{shortUrl}:
+    get:
+      summary: Redirect to the original URL
+      tags:
+        - URL resource
+      description: Given a short URL identifier, this endpoint redirects the request to the original URL if it exists.
+      parameters:
+        - name: shortUrl
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The short URL identifier.
+      responses:
+        '302':
+          description: Found (Redirect to original URL)
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /urls:
     post:
       summary: Create a shortened URL

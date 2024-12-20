@@ -44,7 +44,6 @@ func AuthMiddleware(cfg OIDCConfig) (gin.HandlerFunc, error) {
 		}
 
 		rawToken := parts[1]
-		log.Println("Parts:", parts)
 
 		// Verify the token
 		idToken, err := verifier.Verify(context.Background(), rawToken)

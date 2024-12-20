@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"log"
 	"url-shortening/entities"
 
 	"gorm.io/gorm"
@@ -9,6 +10,7 @@ import (
 type ShortURLRepository interface {
 	CreateShortURL(shortUrl *entities.ShortURL) error
 	DeleteByID(id uint64) (int64, error)
+	FindByShortURL(shortToken string) (*entities.ShortURL, error)
 }
 
 type shortURLRepository struct {
@@ -34,4 +36,13 @@ func (r *shortURLRepository) DeleteByID(id uint64) (int64, error) {
 		return 0, gorm.ErrRecordNotFound
 	}
 	return result.RowsAffected, nil
+}
+
+func (r *shortURLRepository) FindByShortURL(shortToken string) (*entities.ShortURL, error) {
+	var su entities.ShortURL
+	if err := r.db.Where("short_url = ?", shortToken).First(&su).Error; err != nil {
+		log.Println("short_url:", shortToken)
+		return nil, err
+	}
+	return &su, nil
 }

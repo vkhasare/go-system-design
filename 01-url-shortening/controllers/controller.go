@@ -67,3 +67,19 @@ func (ctrl *URLController) DeleteShortURL(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+// RedirectToOriginal handles GET /{short_url}
+func (ctrl *URLController) RedirectToOriginal(c *gin.Context) {
+	s := c.Param("shortUrl")
+
+	originalURL, err := ctrl.service.GetOriginalURL(s)
+	if err != nil {
+		// TODO: Distinguish between 5xx and 404
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	// Redirect to the original URL
+	c.Redirect(http.StatusFound, originalURL)
+	log.Println("Redirected to", originalURL)
+}

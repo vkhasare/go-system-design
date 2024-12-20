@@ -50,6 +50,7 @@ func main() {
 
 	r.POST("/urls", authMiddleware, controller.CreateShortURL)
 	r.DELETE("/urls/:id", authMiddleware, controller.DeleteShortURL)
+	r.GET("/:shortUrl", controller.RedirectToOriginal)
 
 	r.Run(":8053")
 }
