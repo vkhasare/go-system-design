@@ -49,7 +49,7 @@ func main() {
 	r := gin.Default()
 
 	r.POST("/urls", authMiddleware, controller.CreateShortURL)
-	r.DELETE("/urls/:id", controller.DeleteShortURL)
+	r.DELETE("/urls/:id", authMiddleware, controller.DeleteShortURL)
 
 	r.Run(":8053")
 }
