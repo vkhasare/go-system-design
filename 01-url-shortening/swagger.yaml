@@ -73,7 +73,7 @@ paths:
       summary: Generate a QR code for a shortened URL
       tags:
         - URL resource
-      description: Generate a QR code for an existing shortened URL.
+      description: Generate a QR code for an existing shortened URL. The response returns the image binary directly.
       parameters:
         - name: id
           in: path
@@ -91,9 +91,14 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
+            image/png:
               schema:
-                $ref: '#/components/schemas/GenerateQrcodeResponse'
+                type: string
+                format: binary
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
         '400':
           description: Bad Request (invalid parameters)
           content:
@@ -244,17 +249,6 @@ components:
           type: string
           format: date-time
           description: The timestamp when the shortened URL expires.
-
-    GenerateQrcodeResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the shortened URL.
-        qrcode_url:
-          type: string
-          format: uri
-          description: A URL where the generated QR code image can be retrieved.
 
     DeleteUrlResponse:
       type: object
