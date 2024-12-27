@@ -83,3 +83,40 @@ func (ctrl *URLController) RedirectToOriginal(c *gin.Context) {
 	c.Redirect(http.StatusFound, originalURL)
 	log.Println("Redirected to", originalURL)
 }
+
+// GenerateQRCode handles POST /urls/{id}/qrcode
+func (ctrl *URLController) GenerateQRCode(c *gin.Context) {
+	log.Println("GenerateQRCode Handler")
+	id := c.Param("id")
+
+	var req dtos.GenerateQRCodeRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Println("JSON bind failed.", req)
+		c.JSON(http.StatusBadRequest, dtos.ErrorResponse{
+			ErrorCode:    "BAD_REQUEST",
+			ErrorMessage: err.Error(),
+		})
+		return
+	}
+
+	parsedId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		log.Println("Parsing error: ", err.Error())
+		c.JSON(http.StatusBadRequest, dtos.ErrorResponse{
+			ErrorCode:    "BAD_REQUEST",
+			ErrorMessage: "Bad ID" + id,
+		})
+		return
+	}
+
+	qrCode, err := ctrl.service.GetQRCode(parsedId)
+	if err != nil {
+		log.Println("ctrl.service.GetQRCode:", err.Error())
+		c.JSON(http.StatusBadRequest, dtos.ErrorResponse{
+			ErrorCode:    "BAD_REQUEST",
+			ErrorMessage: err.Error(),
+		})
+		return
+	}
+	c.Data(http.StatusOK, "image/png", qrCode)
+}

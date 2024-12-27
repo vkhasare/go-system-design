@@ -51,6 +51,7 @@ func main() {
 	r.POST("/urls", authMiddleware, controller.CreateShortURL)
 	r.DELETE("/urls/:id", authMiddleware, controller.DeleteShortURL)
 	r.GET("/:shortUrl", controller.RedirectToOriginal)
+	r.POST("/urls/:id/qrcode", authMiddleware, controller.GenerateQRCode)
 
 	r.Run(":8053")
 }

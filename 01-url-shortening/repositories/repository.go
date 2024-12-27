@@ -11,6 +11,7 @@ type ShortURLRepository interface {
 	CreateShortURL(shortUrl *entities.ShortURL) error
 	DeleteByID(id uint64) (int64, error)
 	FindByShortURL(shortToken string) (*entities.ShortURL, error)
+	FindByID(id uint64) (*entities.ShortURL, error)
 }
 
 type shortURLRepository struct {
@@ -42,6 +43,15 @@ func (r *shortURLRepository) FindByShortURL(shortToken string) (*entities.ShortU
 	var su entities.ShortURL
 	if err := r.db.Where("short_url = ?", shortToken).First(&su).Error; err != nil {
 		log.Println("short_url:", shortToken)
+		return nil, err
+	}
+	return &su, nil
+}
+
+func (r *shortURLRepository) FindByID(id uint64) (*entities.ShortURL, error) {
+	var su entities.ShortURL
+	if err := r.db.Where("id = ?", id).First(&su).Error; err != nil {
+		log.Println("id:", id)
 		return nil, err
 	}
 	return &su, nil
