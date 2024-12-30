@@ -69,6 +69,46 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
   /urls/{id}/qrcode:
+    get:
+      summary: Fetch a QR code for a shortened URL
+      tags:
+        - URL resource
+      description: Fetch a preexisting QR code for a given URL.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the shortened URL.
+      responses:
+        '200':
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Not Found (no such URL)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       summary: Generate a QR code for a shortened URL
       tags:
@@ -91,6 +131,10 @@ paths:
         '200':
           description: OK
           content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
             image/png:
               schema:
                 type: string
@@ -202,12 +246,9 @@ components:
     GenerateQrcodeRequest:
       type: object
       properties:
-        size:
-          type: integer
-          description: Size of the QR code in pixels.
         image_format:
           type: string
-          enum: [png, svg]
+          enum: [jpeg, png, svg]
           description: The output format of the QR code image.
 
     BulkShortenUrlsRequest:
