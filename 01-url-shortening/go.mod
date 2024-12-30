@@ -5,8 +5,8 @@ go 1.22
 toolchain go1.22.10
 
 require (
-	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b
 	github.com/coreos/go-oidc v2.2.1+incompatible
+	github.com/dennwc/gotrace v1.0.3
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
 	gorm.io/driver/postgres v1.5.11

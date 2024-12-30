@@ -5,10 +5,11 @@ import (
 	"bytes"
 	"log"
 
+	"image/color"
 	"image/jpeg"
 	"image/png"
 
-	svg "github.com/ajstarks/svgo"
+	"github.com/dennwc/gotrace"
 	"rsc.io/qr"
 )
 
@@ -25,32 +26,54 @@ func (s *shortURLService) GetQRCode(id uint64, imgFormat string) ([]byte, error)
 		return nil, err
 	}
 
-	pngImg := qrImage.PNG()
+	pngBuf := qrImage.PNG()
+	var b bytes.Buffer
+	w := bufio.NewWriter(&b)
+
 	switch imgFormat {
 	case "png":
-		return pngImg, nil
+		return pngBuf, nil
+
 	case "jpeg":
-		src, err := png.Decode(bytes.NewReader(pngImg))
-		var b bytes.Buffer
-		w := bufio.NewWriter(&b)
+		src, err := png.Decode(bytes.NewReader(pngBuf))
 		err = jpeg.Encode(w, src, &jpeg.Options{Quality: 100})
-		if err == nil {
-			log.Default().Printf("b.Bytes(): %+v", b)
-			return b.Bytes(), nil
+		if err != nil {
+			log.Default().Printf("JPEG Encode error")
+			return nil, err
 		}
-		return nil, err
+		err = w.Flush()
+		if err != nil {
+			log.Default().Printf("JPEG Flush error", b)
+			return nil, err
+		}
+		return b.Bytes(), nil
+
 	case "svg":
-		var width, height int
-		width, height = qrImage.Size, qrImage.Size
-		var b bytes.Buffer
-		w := bufio.NewWriter(&b)
-		canvas := svg.New(w)
-		canvas.Start(width, height)
-		canvas.Circle(width/2, height/2, 100)
-		canvas.Image(0, 0, width, height, "https://github.com/ajstarks/svgo/blob/master/gophercolor128x128.png?raw=true")
-		canvas.End()
-		log.Default().Printf("b.Bytes(): %+v", b)
+		src, err := png.Decode(bytes.NewReader(pngBuf))
+		bm := gotrace.NewBitmapFromImage(src, func(x, y int, c color.Color) bool {
+			r, g, b, _ := c.RGBA()
+			return r+g+b > 128
+		})
+		paths, err := gotrace.Trace(bm, nil)
+		if err != nil {
+			log.Default().Printf("SVG Tracing error")
+			return nil, err
+		}
+
+		gotrace.WriteSvg(w, src.Bounds(), paths, "")
+		if err != nil {
+			log.Default().Printf("SVG Write error")
+			return nil, err
+		}
+
+		err = w.Flush()
+
+		if err != nil {
+			log.Default().Printf("SVG Flush error")
+			return nil, err
+		}
+
 		return b.Bytes(), nil
 	}
-	return qrImage.PNG(), nil
+	return pngBuf, nil
 }
