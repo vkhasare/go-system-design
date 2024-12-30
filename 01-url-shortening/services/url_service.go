@@ -11,7 +11,7 @@ type ShortURLService interface {
 	CreateShortURL(c *gin.Context, req dtos.CreateShortUrlRequest) (*dtos.CreateShortUrlResponse, error)
 	DeleteShortURLByID(c *gin.Context, id uint64) error
 	GetOriginalURL(s string) (string, error)
-	GetQRCode(id uint64) ([]byte, error)
+	GetQRCode(id uint64, imgFormat string) ([]byte, error)
 }
 
 type shortURLService struct {

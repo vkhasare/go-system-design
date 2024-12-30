@@ -109,7 +109,7 @@ func (ctrl *URLController) GenerateQRCode(c *gin.Context) {
 		return
 	}
 
-	qrCode, err := ctrl.service.GetQRCode(parsedId)
+	qrCode, err := ctrl.service.GetQRCode(parsedId, req.ImageFormat)
 	if err != nil {
 		log.Println("ctrl.service.GetQRCode:", err.Error())
 		c.JSON(http.StatusBadRequest, dtos.ErrorResponse{
@@ -118,5 +118,17 @@ func (ctrl *URLController) GenerateQRCode(c *gin.Context) {
 		})
 		return
 	}
-	c.Data(http.StatusOK, "image/png", qrCode)
+
+	log.Default().Println("req.ImageFormat", req.ImageFormat)
+	switch req.ImageFormat {
+	case "png":
+		c.Data(http.StatusOK, "image/png", qrCode)
+	case "jpeg":
+		c.Data(http.StatusOK, "image/jpeg", qrCode)
+	case "svg":
+		c.Data(http.StatusOK, "image/svg+xml", qrCode)
+	default:
+		c.Data(http.StatusOK, "image/png", qrCode)
+	}
+
 }
