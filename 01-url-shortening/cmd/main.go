@@ -7,6 +7,7 @@ import (
 	"url-shortening/middleware"
 	"url-shortening/repositories"
 	"url-shortening/services"
+	"url-shortening/storageio"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
@@ -40,9 +41,20 @@ func main() {
 		log.Fatalf("failed to connect database: %v", err)
 	}
 
+	//Initialize file storage handler
+	minioHandler, err := storageio.NewMinioFileStorageHandler(
+		"minio1:9002", // endpoint
+		"12TgVKAlZqiOWZrMEmXU",
+		"FySQXC8JfyJV9TbHMNhlczHCIg4PLSpasZf2yJsD",
+		false, // useSSL
+	)
+	if err != nil {
+		log.Fatalf("Failed to create MinioFileStorageHandler: %v", err)
+	}
+
 	//Initialize 3-tier arch.
 	repo := repositories.NewShortURLRepository(db)
-	service := services.NewShortURLService(repo)
+	service := services.NewShortURLService(repo, minioHandler)
 	controller := controllers.NewURLController(service)
 
 	//Initialize gin router

@@ -1,7 +1,7 @@
 # Settings and configurations that are common for minio containers
 x-minio-common: &minio-common
   image: quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z
-  command: server --console-address ":9001" http://minio{1...2}/data{1...2}
+  command: server --console-address ":9001" --address ":9002" http://minio{1...2}/data{1...2}
   expose:
     - "9001"
     - "9002"
