@@ -43,7 +43,7 @@ func main() {
 
 	//Initialize file storage handler
 	minioHandler, err := storageio.NewMinioFileStorageHandler(
-		"minio1:9002", // endpoint
+		"minio-lb:9002", // endpoint
 		"12TgVKAlZqiOWZrMEmXU",
 		"FySQXC8JfyJV9TbHMNhlczHCIg4PLSpasZf2yJsD",
 		false, // useSSL

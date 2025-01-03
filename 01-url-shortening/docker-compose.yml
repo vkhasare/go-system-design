@@ -80,7 +80,7 @@ services:
       - data2-1:/data1
       - data2-2:/data2
 
-  nginx:
+  minio-lb:
     image: nginx:1.19.2-alpine
     hostname: nginx
     volumes:
